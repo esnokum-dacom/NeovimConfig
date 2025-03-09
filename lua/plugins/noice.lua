@@ -13,10 +13,5 @@ return {
         },
       },
     },
-    highlights = {
-      NoiceCmdlinePopupBorder = { fg = "#000000" }, -- Amarillo para el borde
-      NoiceCmdlinePopupTitle = { fg = "#FFFFFF", bold = true }, -- Cian para el título
-      NoiceCmdlinePopup = { bg = "#100e0d" }, -- Fondo oscuro
-    },
   },
 }

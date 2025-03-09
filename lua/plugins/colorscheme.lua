@@ -1,8 +1,8 @@
 return {
-  "LuRsT/austere.vim",
+  "n1ghtmare/noirblaze-vim",
   lazy = false,
   priority = 1000,
   config = function()
-    vim.cmd.colorscheme("austere")
+    vim.cmd.colorscheme("noirblaze")
   end,
 }
