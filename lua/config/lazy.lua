@@ -69,6 +69,31 @@ require("lazy").setup({
       config = true,
     },
 
+    {
+      "williamboman/mason-lspconfig.nvim",
+      opts = {
+        ensure_installed = {
+          "lua_ls",
+          "pyright",
+          "clangd",
+          "codelldb",
+          "css-lsp",
+          "css-variables-lenguaje-server",
+          "eslint-lsp",
+          "html-lsp",
+          "lua-lenguaje-server",
+          "prettier",
+          "python-lsp-server",
+          "ruff",
+          "selene",
+          "shellcheck",
+          "shfmt",
+          "stylua",
+          "tailwindcss-lenguaje-server",
+          "yaml-lenguaje-server",
+        },
+      },
+    },
     -- Autocompletion
     {
       "hrsh7th/nvim-cmp",
