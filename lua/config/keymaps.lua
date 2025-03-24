@@ -46,9 +46,7 @@ vim.keymap.set("n", "<C-r>", function()
   vim.cmd("highlight NormalFloat guibg=NONE ctermbg=NONE")
 
   vim.fn.termopen(cmd)
-
-  keymap.set("n", "<Esc>", "<C-\\><C-n>:close<CR>", { noremap = true, silent = true })
-end, { noremap = true, silent = true })
+end, { noremap = false, silent = true })
 
 --Split Windows
 keymap.set("n", "ss", ":split<Return>", opts)

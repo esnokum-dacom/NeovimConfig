@@ -1,80 +1,89 @@
 return {
-  { -- Mason: Instalador de LSPs y herramientas
+  -- tools
+  {
     "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup()
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed, {
+        "luacheck",
+        "shellcheck",
+        "shfmt",
+        "tailwindcss-language-server",
+        "typescript-language-server",
+        "css-lsp",
+        "pyright",
+        "clangd",
+        "lua-language-server",
+      })
     end,
   },
-  { -- LSP Config
-    "neovim/nvim-lspconfig",
-    dependencies = { "williamboman/mason-lspconfig.nvim" },
-    config = function()
-      local lspconfig = require("lspconfig")
-      require("mason-lspconfig").setup({ ensure_installed = { "pyright", "clangd", "lua_ls" } })
 
-      lspconfig.pyright.setup({}) -- Python
-      lspconfig.clangd.setup({}) -- C/C++
-      lspconfig.lua_ls.setup({
-        settings = {
-          Lua = {
-            diagnostics = { globals = { "vim" } },
-            workspace = { checkThirdParty = false },
+  -- lsp servers
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      inlay_hints = { enabled = true },
+      ---@type lspconfig.options
+      servers = {
+        cssls = {},
+        tailwindcss = {
+          root_dir = function(...)
+            return require("lspconfig.util").root_pattern(".git")(...)
+          end,
+        },
+        tsserver = {
+          root_dir = function(...)
+            return require("lspconfig.util").root_pattern(".git")(...)
+          end,
+          single_file_support = false,
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "literal",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = false,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
           },
         },
-      })
-    end,
-  },
-  { -- Autocompletado con nvim-cmp
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
-      "onsails/lspkind.nvim",
+        html = {},
+        lua_ls = {
+          single_file_support = true,
+          settings = {
+            Lua = {
+              workspace = { checkThirdParty = false },
+              completion = { workspaceWord = true, callSnippet = "Both" },
+              hint = { enable = true, paramType = true, paramName = "Disable" },
+              diagnostics = { disable = { "incomplete-signature-doc", "trailing-space" } },
+              format = { enable = false, defaultConfig = { indent_style = "space", indent_size = "2" } },
+            },
+          },
+        },
+        pyright = {},
+        clangd = {},
+      },
+      setup = {},
     },
-    config = function()
-      local cmp = require("cmp")
-      local lspkind = require("lspkind")
-      cmp.setup({
-        formatting = {
-          format = lspkind.cmp_format({
-            mode = "symbol_text",
-            maxwidth = 50,
-          }),
-        },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "buffer" },
-          { name = "path" },
-        }),
-      })
-    end,
   },
-  { -- Formateo con null-ls
-    "jose-elias-alvarez/null-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local null_ls = require("null-ls")
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.formatting.black, -- Python
-          null_ls.builtins.formatting.isort,
-          null_ls.builtins.formatting.clang_format, -- C
-          null_ls.builtins.formatting.stylua, -- Lua
-        },
-      })
+  {
+    "nvim-cmp",
+    dependencies = { "hrsh7th/cmp-emoji" },
+    opts = function(_, opts)
+      table.insert(opts.sources, { name = "emoji" })
     end,
   },
 }
